@@ -27,26 +27,18 @@ public class ShopMaterial
             data = null;
             try
             {
-                switch (material.ordinal())
+                switch (material)
                 {
-                    case 1:
-                        data = new Coal(CoalType.valueOf(s));
-                        break;
-                    case 2:
+                    case LOG:
                         data = new Tree(TreeSpecies.valueOf(s));
                         break;
-                    case 3:
+                    case LEAVES:
                         data = new Leaves(TreeSpecies.valueOf(s));
                         break;
-                    case 4:
-                    case 5:
+                    case STEP:
                         data = new Step(Material.valueOf(s));
                         break;
-                    case 6:
-                        data = new Dye();
-                        ((Dye) data).setColor(DyeColor.valueOf(s));
-                        break;
-                    case 7:
+                    case WOOL:
                         data = new Wool(DyeColor.valueOf(s));
                 }
             }
@@ -175,29 +167,25 @@ public class ShopMaterial
         StringBuilder sb = new StringBuilder();
         MaterialData data = material.getNewData(durability);
 
-        switch (material.ordinal())
+        switch (material)
         {
-            case 1:
-                sb.append(((Coal) data).getType().toString());
-                break;
-            case 2:
+            
+            case LOG:
                 sb.append(new StringBuilder().append(((Tree) data).getSpecies().toString()).append("_").append(material.toString()).toString());
 
                 break;
-            case 3:
+            case LEAVES:
                 sb.append(new StringBuilder().append(((Leaves) data).getSpecies().toString()).append("_").append(material.toString()).toString());
 
                 break;
-            case 4:
-            case 5:
+            case STEP:
                 sb.append(new StringBuilder().append(((Step) data).getMaterial().toString()).append("_").append(material.toString()).toString());
-
                 break;
-            case 6:
+            /*case :
                 sb.append(new StringBuilder().append(((Dye) data).getColor().toString()).append("_").append(material.toString()).toString());
 
-                break;
-            case 7:
+                break;*/
+            case WOOL:
                 sb.append(new StringBuilder().append(((Wool) data).getColor().toString()).append("_").append(material.toString()).toString());
 
                 break;

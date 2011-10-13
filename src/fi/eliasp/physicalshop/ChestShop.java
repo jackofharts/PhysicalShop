@@ -83,7 +83,12 @@ public class ChestShop extends Shop
 
         Block down = getSign().getBlock().getRelative(BlockFace.DOWN);
 
-        return (down.getType() == Material.CHEST) && (down == block);
+        
+        if (down.getType() != Material.CHEST) {
+            return false;
+        }
+         
+        return ShopHelpers.CompareBlocks(down, block);
     }
 
     public boolean sell(Player player)
@@ -91,7 +96,12 @@ public class ChestShop extends Shop
         ShopItemStack[] items = InventoryHelpers.getItems(chest.getInventory());
         try
         {
-            InventoryHelpers.exchange(chest.getInventory(), getMaterial().getStack(getSellRate().getAmount()), PhysicalShop.getCurrency().getStack(getSellRate().getPrice()));
+            Rate r = getSellRate();
+            if(r == null){
+                Messaging.send(Messaging.NO_SELL);
+                return false;
+            }
+            InventoryHelpers.exchange(chest.getInventory(), getMaterial().getStack(r.getAmount()), PhysicalShop.getCurrency().getStack(r.getPrice()));
         }
         catch (InvalidExchangeException e)
         {

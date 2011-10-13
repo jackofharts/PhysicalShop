@@ -23,11 +23,19 @@ public class PhysicalShopBlockListener extends BlockListener
         {
             return;
         }
-
-        if (!ShopHelpers.isBlockDestroyable(e.getBlock(), e.getPlayer()))
-        {
+        
+        Block b = e.getBlock();
+        boolean bIsShop = (ShopHelpers.getShops(b).size() > 0);
+        if (!ShopHelpers.isBlockDestroyable(b, e.getPlayer()))
+        {            
+            Messaging.log(e.getPlayer().getName() + " tried to destroy shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ());
             e.setCancelled(true);
         }
+        else if (bIsShop){
+            //This WAS a shop block
+            Messaging.log(e.getPlayer().getName() + " removed shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ()); 
+        }
+            
     }
 
     public void onBlockPlace(BlockPlaceEvent e)
@@ -67,11 +75,12 @@ public class PhysicalShopBlockListener extends BlockListener
             {
                 Shop shop = ShopHelpers.getShop(b.getRelative(BlockFace.UP));
 
-                if ((shop != null) && (shop.isShopBlock(b)))
-                {
-                    Messaging.send(Messaging.CANT_PLACE_CHEST);
-                    e.setCancelled(true);
-                    break;
+                if (shop != null) {
+                    if(shop.isShopBlock(b)){
+                        Messaging.send(Messaging.CANT_PLACE_CHEST);
+                        e.setCancelled(true);
+                        break;
+                    }
                 }
             }
         }
@@ -83,7 +92,7 @@ public class PhysicalShopBlockListener extends BlockListener
         {
             return;
         }
-
+        
         Messaging.save(e.getPlayer());
 
         String[] lines = e.getLines();
@@ -95,13 +104,13 @@ public class PhysicalShopBlockListener extends BlockListener
 
         if (!PhysicalShop.getPermissions().hasBuild(e.getPlayer()))
         {
+            Messaging.log("Player " + Messaging.CANT_BUILD);
             Messaging.send(Messaging.CANT_BUILD);
             e.setCancelled(true);
             return;
         }
 
         String ownerName = Shop.getOwnerName(lines);
-
         if (ownerName.equalsIgnoreCase(PhysicalShop.getConf().getServerOwner()))
         {
             if (!PhysicalShop.getPermissions().hasAdmin(e.getPlayer()))
@@ -124,6 +133,8 @@ public class PhysicalShopBlockListener extends BlockListener
             {
                 e.setLine(3, e.getPlayer().getName());
             }
+            Block b = e.getBlock();
+            Messaging.log(e.getPlayer().getName() + " placed shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ()); 
         }
     }
 }

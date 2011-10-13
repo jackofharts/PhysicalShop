@@ -11,6 +11,11 @@ import java.util.List;
 
 public class ShopHelpers
 {
+    
+    
+    public static boolean CompareBlocks(Block block1, Block block2){
+        return ((block1.getX() == block2.getX()) && (block1.getY() == block2.getY()) && (block1.getZ() == block2.getZ()) && (block1.getWorld().getName() == block2.getWorld().getName()));
+    }
     static Shop getShop(Block block)
     {
         if (block == null)

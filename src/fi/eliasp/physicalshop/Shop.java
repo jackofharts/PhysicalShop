@@ -109,7 +109,7 @@ public class Shop
                 {
                     Integer.valueOf(amount), material, Integer.valueOf(price), PhysicalShop.getCurrency()
                 });
-
+        Messaging.log(player.getName() + " Bought " + amount + " of " + material + " from shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
         player.updateInventory();
 
         return true;
@@ -183,18 +183,19 @@ public class Shop
     {
         Block signBlock = sign.getBlock();
 
-        if (block == signBlock)
+        if (ShopHelpers.CompareBlocks(block,signBlock))
         {
             return true;
         }
 
         org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
 
-        return signBlock.getRelative(signData.getAttachedFace()) == block;
+        return ShopHelpers.CompareBlocks(signBlock.getRelative(signData.getAttachedFace()), block);
     }
 
     protected boolean sell(Player player)
     {
+       
         if (!canSell())
         {
             Messaging.send(Messaging.NO_SELL);
@@ -232,7 +233,7 @@ public class Shop
                 {
                     Integer.valueOf(amount), material, Integer.valueOf(price), PhysicalShop.getCurrency()
                 });
-
+        Messaging.log(player.getName() + " sold " + amount + " of " + material + " to shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
         return true;
     }
 

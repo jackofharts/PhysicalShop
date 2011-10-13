@@ -15,7 +15,7 @@ public class PhysicalShopPlayerListener extends PlayerListener
         {
             return;
         }
-
+        
         Messaging.save(e.getPlayer());
 
         Block block = e.getClickedBlock();
@@ -23,6 +23,7 @@ public class PhysicalShopPlayerListener extends PlayerListener
         if ((PhysicalShop.getConf().isProtectChestUse()) && (e.getAction() == Action.RIGHT_CLICK_BLOCK) && (block.getType() == Material.CHEST))
         {
             Shop shop = ShopHelpers.getShop(block.getRelative(BlockFace.UP));
+            
 
             if ((shop != null) && (shop.isShopBlock(block)) && (!shop.isOwner(e.getPlayer())))
             {
@@ -38,6 +39,7 @@ public class PhysicalShopPlayerListener extends PlayerListener
         {
             return;
         }
+
 
         if (!PhysicalShop.getPermissions().hasUse(e.getPlayer()))
         {
