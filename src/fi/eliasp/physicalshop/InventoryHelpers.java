@@ -1,6 +1,5 @@
 package fi.eliasp.physicalshop;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,7 +40,6 @@ public class InventoryHelpers
             }
         }
 
-        label156:
         return left == 0;
     }
 

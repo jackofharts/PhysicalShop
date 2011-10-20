@@ -37,6 +37,8 @@ public class PhysicalShop extends JavaPlugin
         configuration = new Config(getConfig());
         currency = configuration.getCurrency();
         permissions = new Permissions(this);
+        
+        PhysicalShopMap.folder = getDataFolder();
 
         Messaging.STATUS = "The shop contains %1$d %2$s and %3$d %4$s";
         Messaging.CANT_DESTROY = "You are not allowed to destroy this shop";

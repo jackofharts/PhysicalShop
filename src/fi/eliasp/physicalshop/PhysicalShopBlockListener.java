@@ -7,6 +7,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.block.Sign;
+import java.util.List;
 
 public class PhysicalShopBlockListener extends BlockListener
 {
@@ -25,15 +27,28 @@ public class PhysicalShopBlockListener extends BlockListener
         }
         
         Block b = e.getBlock();
-        boolean bIsShop = (ShopHelpers.getShops(b).size() > 0);
+        // Check for shops, this uses special case to find any shop signs not just valid chest shops
+        // One consequence: Shops are removed from DB when either the chest or sign is removed, 
+        // so they may be removed twice.  For server shops, they don't need chests placed under them
+        // but this is a valid arrangement.  Removing the chest and not the sign will leave the database
+        // out of sync until the sign is used again. 
+        // TODO: Fix this issue.
+        List<Shop> shops = ShopHelpers.getShops(b, true);
+        boolean bIsShop = (shops.size() > 0);
         if (!ShopHelpers.isBlockDestroyable(b, e.getPlayer()))
         {            
-            Messaging.log(e.getPlayer().getName() + " tried to destroy shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ());
             e.setCancelled(true);
+            Messaging.log(e.getPlayer().getName() + " can't destroy this shop");
         }
         else if (bIsShop){
             //This WAS a shop block
-            Messaging.log(e.getPlayer().getName() + " removed shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ()); 
+        	for (Shop shop: shops) {
+        		//Remove and log each shop found
+        		Sign sign = shop.getSign();
+        		String owner = sign.getLine(3);
+        		Messaging.log(e.getPlayer().getName() + " removed shop owned by " + owner + " at(" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+        		PhysicalShopMap.removeShop(owner, sign.getWorld().getName(), sign.getX(), sign.getY(), sign.getZ());
+        	}
         }
             
     }
@@ -119,6 +134,9 @@ public class PhysicalShopBlockListener extends BlockListener
                 e.setCancelled(true);
                 return;
             }
+            Block b = e.getBlock();
+            Messaging.log(e.getPlayer().getName() + " placed [Server] shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ()); 
+            PhysicalShopMap.addShop("[Server]", Shop.getMaterial(lines).getMaterial(), Shop.getRate(lines,1), Shop.getRate(lines, 2), b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
         }
         else
         {
@@ -135,6 +153,8 @@ public class PhysicalShopBlockListener extends BlockListener
             }
             Block b = e.getBlock();
             Messaging.log(e.getPlayer().getName() + " placed shop at(" + b.getWorld().getName() + ") " + b.getX() + " " + b.getY() + " " + b.getZ()); 
+            /* Add shop to DB here */
+            PhysicalShopMap.addShop(e.getPlayer().getName(), Shop.getMaterial(lines).getMaterial(), Shop.getRate(lines,1), Shop.getRate(lines, 2), b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
         }
     }
 }

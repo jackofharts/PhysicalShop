@@ -1,12 +1,10 @@
 package fi.eliasp.physicalshop;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import org.bukkit.command.CommandSender;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.text.MessageFormat;
 public class Messaging
 {
     public static String BUY;

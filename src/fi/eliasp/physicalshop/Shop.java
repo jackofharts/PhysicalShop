@@ -30,6 +30,18 @@ public class Shop
     {
         return lines[3];
     }
+    
+    public static Rate getRate(String[] lines, int line) {
+        Matcher m = PhysicalShop.getConf().getRatePattern().matcher(lines[line]);
+
+        if (m.find())
+        {
+            int amount = Integer.parseInt(m.group(1));
+            int price = Integer.parseInt(m.group(2));
+            return new Rate(amount, price);
+        }
+        return null;
+    }
 
     private static Rate getRate(org.bukkit.block.Sign sign, int line)
     {
@@ -72,7 +84,8 @@ public class Shop
         }
     }
 
-    protected boolean buy(Player player)
+    @SuppressWarnings("deprecation")
+	protected boolean buy(Player player)
     {
         if (!canBuy())
         {
@@ -109,7 +122,7 @@ public class Shop
                 {
                     Integer.valueOf(amount), material, Integer.valueOf(price), PhysicalShop.getCurrency()
                 });
-        Messaging.log(player.getName() + " Bought " + amount + " of " + material + " from shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+        Messaging.log(player.getName() + " Bought " + amount + " " + material + " for " + price + " " + PhysicalShop.getCurrency() + " from shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
         player.updateInventory();
 
         return true;
@@ -193,7 +206,8 @@ public class Shop
         return ShopHelpers.CompareBlocks(signBlock.getRelative(signData.getAttachedFace()), block);
     }
 
-    protected boolean sell(Player player)
+    @SuppressWarnings("deprecation")
+	protected boolean sell(Player player)
     {
        
         if (!canSell())
@@ -233,7 +247,7 @@ public class Shop
                 {
                     Integer.valueOf(amount), material, Integer.valueOf(price), PhysicalShop.getCurrency()
                 });
-        Messaging.log(player.getName() + " sold " + amount + " of " + material + " to shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+        Messaging.log(player.getName() + " sold " + amount + " " + material + " for " + price + " " + PhysicalShop.getCurrency() + " to shop at (" + sign.getWorld().getName() + ") " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
         return true;
     }
 
@@ -254,5 +268,8 @@ public class Shop
                         Integer.valueOf(sellRate.getAmount()), material, Integer.valueOf(sellRate.getPrice()), PhysicalShop.getCurrency()
                     });
         }
+        
+        // Add this shop to the DB.  If it already exists this has no effect.
+        PhysicalShopMap.addShop(ownerName, material.getMaterial(), buyRate, sellRate, sign.getWorld().getName(), sign.getX(), sign.getY(), sign.getZ());
     }
 }

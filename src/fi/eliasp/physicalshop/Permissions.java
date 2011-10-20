@@ -1,12 +1,8 @@
 package fi.eliasp.physicalshop;
 
 import com.nijiko.permissions.PermissionHandler;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-
 public class Permissions
 {
     private PermissionHandler permissions = null;

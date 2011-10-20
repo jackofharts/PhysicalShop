@@ -56,7 +56,7 @@ public class ShopHelpers
 
     static List<Shop> getShops(Block block)
     {
-        ArrayList shops = new ArrayList();
+        ArrayList<Shop> shops = new ArrayList<Shop>();
 
         Block[] blocks =
         {
@@ -66,6 +66,28 @@ public class ShopHelpers
         for (Block b : blocks)
         {
             Shop shop = getShop(b);
+
+            if ((shop != null) && (shop.isShopBlock(block)))
+            {
+                shops.add(shop);
+            }
+        }
+
+        return shops;
+    }
+    
+    static List<Shop> getShops(Block block, boolean ignoreChecks)
+    {
+        ArrayList<Shop> shops = new ArrayList<Shop>();
+
+        Block[] blocks =
+        {
+            block, block.getRelative(BlockFace.UP), block.getRelative(BlockFace.DOWN), block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.SOUTH), block.getRelative(BlockFace.WEST)
+        };
+
+        for (Block b : blocks)
+        {
+            Shop shop = getShop(b, true);
 
             if ((shop != null) && (shop.isShopBlock(block)))
             {
@@ -85,6 +107,7 @@ public class ShopHelpers
             if (!shop.isOwner(player))
             {
                 Messaging.send(Messaging.CANT_DESTROY);
+                Messaging.log(player.getName() + " tried to destroy shop at(" + block.getWorld().getName() + ") " + block.getX() + " " + block.getY() + " " + block.getZ());
                 shop.getSign().update();
                 return false;
             }
@@ -92,4 +115,34 @@ public class ShopHelpers
 
         return true;
     }
+    
+    static Shop getShop(Block block, boolean ignoreChecks)
+    {
+        if (block == null)
+        {
+            return null;
+        }
+
+        if ((block.getType() != Material.SIGN_POST) && (block.getType() != Material.WALL_SIGN))
+        {
+            return null;
+        }
+
+        Sign sign = (Sign) block.getState();
+
+        if (sign == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return new Shop(sign);
+        }
+        catch (InvalidSignException e)
+        {
+        }
+        return null;
+    }
+
 }

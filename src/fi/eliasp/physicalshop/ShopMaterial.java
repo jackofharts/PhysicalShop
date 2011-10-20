@@ -1,6 +1,5 @@
 package fi.eliasp.physicalshop;
 
-import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
